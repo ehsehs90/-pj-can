@@ -11,6 +11,10 @@ import gnu.io.SerialPortEventListener;
 import java.util.Enumeration;
 
 public class SerialTest implements SerialPortEventListener {
+	
+	//String[] str = null;
+	//int i = 0;
+	
 
 	SerialPort serialPort;
 	CarLattePanda car;
@@ -65,28 +69,72 @@ public class SerialTest implements SerialPortEventListener {
 		}
 	}
 
+//	public synchronized void serialEvent(SerialPortEvent oEvent) {
+//		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
+//			String sCommand = "";
+//			int cTemp;
+//			try {
+//				String[] str = null;
+//				int i = 0;
+//				while (input.available() > 0) {
+//					try {
+//						int available = input.available();
+//						byte chunk[] = new byte[available];
+//						input.read(chunk, 0, available);
+//						//System.out.print(new String(chunk));
+//						// CarLattePanda car = new CarLattePanda();
+//						str[i] = new String(chunk);
+//						i++;
+//						
+//						
+//						//car.sendData("rfid");
+//					} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				}
+//
+//				System.out.println(str[0].toString());
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//	}
 	public synchronized void serialEvent(SerialPortEvent oEvent) {
 		if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-			String sCommand = "";
-			int cTemp;
+			byte chunk[] = new byte[1];
+			int len = -1;
+			String str = "";
+			StringBuilder sb = new StringBuilder();
+			int idx = 0;
+			
 			try {
-				while (input.available() > 0) {
-					try {
-						int available = input.available();
-						byte chunk[] = new byte[available];
-						input.read(chunk, 0, available);
-						System.out.print(new String(chunk));
-						// CarLattePanda car = new CarLattePanda();
-						car.sendData("start");
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+				while (idx < 110) {
+					len = this.input.read(chunk);
+					String ss = new String(chunk,0,len);
+					ss = ss.replaceAll("(\r\n|\r|\n|\n\r)", " ");
+					String t = "";
+					for(int i=0; i<ss.length(); i++) {
+						t += ss.charAt(i);
 					}
+					sb.append(t);
+					//System.out.println(sb.toString());
+					idx += 1;
 				}
+
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}			
+			System.out.println(sb.toString());
+			String sooy = sb.toString();
+			if(sooy.contains("D6 2C 4B 54")) {
+				car.sendData("start");
 			}
+			//System.out.println(sb.toString());
+			
+			
 		}
 	}
 }
