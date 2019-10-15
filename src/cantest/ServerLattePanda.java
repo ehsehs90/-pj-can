@@ -67,9 +67,13 @@ public class ServerLattePanda extends Application{
                String[] code = result.split(":");
             
                   //for(int i = 1; i <= code.length-1; i++) { *******************************
+               // if(code[1].contains("U2800000001737461727452333787") || code[1].contains("card")) {
                   if(code[1].contains("U2800000001737461727452333787")) {
+                	  
                      printMsg("RFID들어옴");
+                     //printMsg("RFID 리더기 인식 중");
                      sendData("start");
+                     //sendData("ing");  이 sendData의 checksum 번호를 알면 될 것 같 다....
                   }
                   else if(code.length > 2){
                      for(int i=2;i<4;i++) {
